@@ -3,10 +3,10 @@ import { getSummary } from '@/lib/angelone';
 
 export async function GET(
   _req: NextRequest,
-  { params }: { params: { ticker: string } }
+  { params }: { params: Promise<{ ticker: string }> }
 ) {
   try {
-    const { ticker } = params;
+    const { ticker } = await params;
     if (!ticker) return NextResponse.json({ error: 'ticker required' }, { status: 400 });
 
     const data = await getSummary(ticker.toUpperCase());

@@ -51,10 +51,12 @@ function calcComposite(
 
 export async function GET(
   _req: NextRequest,
-  { params }: { params: { ticker: string } }
+  { params }: { params: Promise<{ ticker: string }> }
 ) {
+  let ticker = '';
   try {
-    const ticker = params.ticker.toUpperCase();
+    const { ticker: rawTicker } = await params;
+    ticker = rawTicker.toUpperCase();
     if (!ticker) return NextResponse.json({ error: 'ticker required' }, { status: 400 });
 
     // Fetch all data in parallel
@@ -125,7 +127,7 @@ export async function GET(
     });
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Analysis failed';
-    console.error(`[analyze/${params.ticker}]`, err);
+    console.error(`[analyze/${ticker}]`, err);
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }

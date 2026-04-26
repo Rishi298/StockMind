@@ -1,5 +1,6 @@
 'use client';
 
+import { use } from 'react';
 import useSWR from 'swr';
 import Link from 'next/link';
 import { ArrowLeft, RefreshCw, AlertTriangle } from 'lucide-react';
@@ -20,11 +21,11 @@ const fetcher = (url: string) => fetch(url).then((r) => {
 });
 
 interface PageProps {
-  params: { ticker: string };
+  params: Promise<{ ticker: string }>;
 }
 
 export default function StockPage({ params }: PageProps) {
-  const { ticker } = params;
+  const { ticker } = use(params);
   const upperTicker = ticker.toUpperCase();
 
   const { data: analysis, error: analysisError, isLoading: analysisLoading, mutate } = useSWR<AnalysisResult>(

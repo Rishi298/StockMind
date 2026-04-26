@@ -4,9 +4,10 @@ import { getQuote as yahooQuote } from '@/lib/yahoo';
 
 export async function GET(
   _req: NextRequest,
-  { params }: { params: { ticker: string } }
+  { params }: { params: Promise<{ ticker: string }> }
 ) {
-  const ticker = params.ticker?.toUpperCase();
+  const { ticker: rawTicker } = await params;
+  const ticker = rawTicker?.toUpperCase();
   if (!ticker) return NextResponse.json({ error: 'ticker required' }, { status: 400 });
 
   // Try Angel One (real-time NSE, covers all stocks via scrip-tokens.json)

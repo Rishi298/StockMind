@@ -5,10 +5,10 @@ import { prisma } from '@/lib/db';
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { ticker: string } }
+  { params }: { params: Promise<{ ticker: string }> }
 ) {
   try {
-    const { ticker } = params;
+    const { ticker } = await params;
     if (!ticker) return NextResponse.json({ error: 'ticker required' }, { status: 400 });
 
     const symbol = ticker.toUpperCase();
