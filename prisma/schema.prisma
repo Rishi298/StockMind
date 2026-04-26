@@ -1,0 +1,112 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model StockHolding {
+  id           Int      @id @default(autoincrement())
+  userId       String
+  symbol       String
+  accountId    String   @default("default")
+  name         String
+  sector       String   @default("")
+  qty          Float
+  avgBuyPrice  Float
+  buyDate      DateTime @default(now())
+  brokerName   String   @default("Manual")
+  notes        String   @default("")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@unique([userId, symbol, accountId])
+  @@index([userId])
+}
+
+model MFHolding {
+  id             Int      @id @default(autoincrement())
+  userId         String
+  schemeCode     String
+  schemeName     String
+  amcName        String   @default("")
+  category       String   @default("Equity")
+  units          Float
+  avgNav         Float
+  investedAmount Float
+  buyDate        DateTime @default(now())
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@unique([userId, schemeCode])
+  @@index([userId])
+}
+
+model MFNavCache {
+  id         Int      @id @default(autoincrement())
+  schemeCode String
+  navDate    String
+  nav        Float
+  createdAt  DateTime @default(now())
+
+  @@unique([schemeCode, navDate])
+  @@index([schemeCode])
+}
+
+model Alert {
+  id            Int      @id @default(autoincrement())
+  userId        String
+  type          String
+  title         String
+  message       String
+  severity      String   @default("medium")
+  isRead        Boolean  @default(false)
+  relatedSymbol String   @default("")
+  createdAt     DateTime @default(now())
+
+  @@index([userId])
+}
+
+model RebalanceHistory {
+  id      Int      @id @default(autoincrement())
+  userId  String
+  report  String
+  runDate DateTime @default(now())
+
+  @@index([userId])
+}
+
+model Watchlist {
+  id      Int      @id @default(autoincrement())
+  userId  String
+  symbol  String
+  name    String
+  sector  String   @default("")
+  addedAt DateTime @default(now())
+
+  @@unique([userId, symbol])
+  @@index([userId])
+}
+
+// Global — market data shared across all users
+model FundamentalsCache {
+  id            Int      @id @default(autoincrement())
+  symbol        String   @unique
+  pe            Float?
+  pb            Float?
+  marketCap     Float?
+  roe           Float?
+  debtToEquity  Float?
+  revenueGrowth Float?
+  eps           Float?
+  dividendYield Float?
+  cachedAt      DateTime @default(now())
+}
+
+// Global — Angel One token map shared across all users
+model Settings {
+  id    Int    @id @default(autoincrement())
+  key   String @unique
+  value String
+}
