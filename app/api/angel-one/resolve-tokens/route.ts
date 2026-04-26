@@ -4,7 +4,7 @@ import { getSymbolToToken } from '@/lib/scripmaster';
 
 export async function POST() {
   const stocks = await prisma.stockHolding.findMany({ select: { symbol: true } });
-  const symbols = stocks.map((s) => s.symbol);
+  const symbols = stocks.map((s: { symbol: string }) => s.symbol);
 
   const existing = await prisma.settings.findMany({
     where: { key: { startsWith: 'angel_token_' } },
