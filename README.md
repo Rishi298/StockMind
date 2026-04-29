@@ -95,41 +95,6 @@ Open [http://localhost:3000](http://localhost:3000) — the screener loads immed
 
 **Quick test:** Visit `/stock/RELIANCE` — you should see live data + AI verdict.
 
----
-
-## Environment Variables
-
-Create `.env.local` with the following:
-
-```env
-# ── Clerk Authentication (required) ──────────────────────────────
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_...
-CLERK_SECRET_KEY=sk_...
-NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
-NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
-NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/
-NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/
-
-# ── Neon PostgreSQL (required) ───────────────────────────────────
-DATABASE_URL=postgresql://...
-
-# ── Broker Integrations (optional) ──────────────────────────────
-# Angel One SmartAPI
-ANGEL_ONE_API_KEY=your_key
-ANGEL_ONE_CLIENT_ID=your_id
-
-# Zerodha Kite Connect
-ZERODHA_API_KEY=your_key
-ZERODHA_API_SECRET=your_secret
-
-# ── Email Digests (optional) ─────────────────────────────────────
-EMAIL_FROM=you@gmail.com
-EMAIL_APP_PASSWORD=your_gmail_app_password
-```
-
-> Get Clerk keys free at [clerk.com](https://clerk.com) · Get Neon DB free at [neon.tech](https://neon.tech)
-
----
 
 ## Deploy to Vercel
 
