@@ -1,206 +1,256 @@
+<div align="center">
+
+<img src="https://img.shields.io/badge/Next.js-15.5-black?style=for-the-badge&logo=next.js" />
+<img src="https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript&logoColor=white" />
+<img src="https://img.shields.io/badge/Clerk-Auth-6C47FF?style=for-the-badge&logo=clerk&logoColor=white" />
+<img src="https://img.shields.io/badge/Neon-PostgreSQL-00E699?style=for-the-badge&logo=postgresql&logoColor=black" />
+<img src="https://img.shields.io/badge/Vercel-Deployed-000000?style=for-the-badge&logo=vercel" />
+
+<br /><br />
+
 # StockMind Terminal
 
-AI-powered stock screener and deep analysis platform for Indian equities listed on NSE. Covers Nifty 500 universe with live data from Yahoo Finance and a 6-agent analysis engine.
+### AI-powered investment terminal for the Indian retail investor.
+### Screen 500+ NSE stocks · 6-agent deep analysis · portfolio sync from your broker.
 
-## Features
+<br />
 
-- **Live screener** — Nifty 500 stocks with real-time prices, P/E, P/B, market cap, 52-week range
-- **6 preset filters** — Quality Compounders, Momentum Leaders, Deep Value, GARP, Income, Turnaround
-- **Deep-dive analysis** — 6 AI agents per stock: Fundamental, Technical, Sentiment, Moat, Growth, Risk
-- **Trade levels** — Entry zone, stop-loss, Target 1, Target 2 derived from ATR
-- **Price chart** — 1mo/3mo/6mo/1y with 50-DMA, 200-DMA, RSI overlay
-- **Zero API keys** — uses `yahoo-finance2` (free, no key needed)
+> *A Bloomberg Terminal for Bharat — without the $24,000/year price tag.*
+
+</div>
 
 ---
 
-## Local Setup
+## What is this?
 
-### Prerequisites
+StockMind Terminal is a full-stack web app that brings institutional-grade stock research to retail investors. It combines live NSE/BSE market data with a 6-agent AI engine that scores every stock across fundamentals, technicals, moat, growth, sentiment, and risk — then spits out a clear verdict: **Strong Buy → Avoid**.
 
-- Node.js 18+ (check: `node --version`)
-- npm 9+ (check: `npm --version`)
+No spreadsheets. No juggling 10 browser tabs. Just open the terminal and decide.
 
-### Steps
+---
+
+## Features at a Glance
+
+| | Feature | What it does |
+|---|---|---|
+| 🔍 | **NSE Screener** | Filter 500+ stocks by index (Nifty 50 / Midcap / Smallcap), PE, market cap, preset strategy |
+| 🤖 | **6-Agent AI Analysis** | Every stock scored 0–10 across 6 dimensions → composite verdict with entry zone |
+| 📊 | **Portfolio Manager** | Track stocks + mutual funds, see live P&L, unrealised gains |
+| 🏦 | **Broker Sync** | Auto-import holdings from **Angel One** (SmartAPI) or **Zerodha** (CSV) |
+| ⚖️ | **Smart Rebalancing** | AI detects overweight sectors and recommends rebalance moves |
+| 🔔 | **Alerts & Watchlist** | Price alerts, signal-flip alerts, daily/weekly email digest |
+| 📈 | **Interactive Charts** | TradingView-quality price charts — 1M to 5Y, Angel One + Yahoo fallback |
+| 💰 | **Mutual Funds** | Track SIP/lump-sum holdings with live NAV, 1Y/3Y/5Y trailing returns |
+
+---
+
+## The AI Engine
+
+6 specialised agents run **in parallel** on every stock:
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                     6-AGENT ANALYSIS ENGINE                     │
+├──────────────┬──────────────┬──────────────┬────────────────────┤
+│ Fundamental  │     Moat     │  Technical   │      Growth        │
+│    30%  ██████│    25%  █████│    20%  ████ │      10%  ██       │
+│              │              │              │                    │
+│ PE, PB, ROE  │ Brand, moat, │ Momentum,   │ Revenue CAGR,      │
+│ debt, margins│ pricing power│ entry zone  │ bear/base/bull     │
+├──────────────┴──────────────┴──────────────┴────────────────────┤
+│         Risk  10%  ██         Sentiment  5%  █                  │
+│         Volatility, drawdown  News tone, market bias            │
+└─────────────────────────────────────────────────────────────────┘
+         ↓
+  Composite = F×30% + M×25% + T×20% + G×10% + R×10% + S×5%
+         ↓
+  ≥7.5 → Strong Buy  |  6–7.4 → Buy  |  4.5–6 → Hold
+  3–4.5 → Caution    |  <3    → Avoid
+```
+
+---
+
+## Quick Start (Local)
+
+**Prerequisites:** Node.js 18+, npm 9+
 
 ```bash
-# 1. Clone or extract the project
-cd stockmind-terminal
+# 1. Clone
+git clone https://github.com/Rishi298/StockMind.git
+cd StockMind
 
-# 2. Install dependencies (~300 packages, takes ~30s)
+# 2. Install dependencies
 npm install
 
-# 3. Start dev server
+# 3. Set up environment variables
+cp .env.local.example .env.local
+# → Fill in CLERK keys, DATABASE_URL (see Environment Variables section)
+
+# 4. Generate Prisma client + run dev server
+npx prisma generate
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000). You should see the screener.
+Open [http://localhost:3000](http://localhost:3000) — the screener loads immediately.
 
-**Test these stocks work:** RELIANCE, TCS, HDFCBANK, INFY, BHARTIARTL
-- Visit `http://localhost:3000/stock/RELIANCE`
-- All numbers should be live from Yahoo Finance
+**Quick test:** Visit `/stock/RELIANCE` — you should see live data + AI verdict.
 
-### Environment Variables
+---
 
-No `.env` required for MVP. Copy `.env.local.example` to `.env.local` if you want to add optional keys:
+## Environment Variables
 
-```bash
-cp .env.local.example .env.local
+Create `.env.local` with the following:
+
+```env
+# ── Clerk Authentication (required) ──────────────────────────────
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_...
+CLERK_SECRET_KEY=sk_...
+NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
+NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
+NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/
+NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/
+
+# ── Neon PostgreSQL (required) ───────────────────────────────────
+DATABASE_URL=postgresql://...
+
+# ── Broker Integrations (optional) ──────────────────────────────
+# Angel One SmartAPI
+ANGEL_ONE_API_KEY=your_key
+ANGEL_ONE_CLIENT_ID=your_id
+
+# Zerodha Kite Connect
+ZERODHA_API_KEY=your_key
+ZERODHA_API_SECRET=your_secret
+
+# ── Email Digests (optional) ─────────────────────────────────────
+EMAIL_FROM=you@gmail.com
+EMAIL_APP_PASSWORD=your_gmail_app_password
 ```
+
+> Get Clerk keys free at [clerk.com](https://clerk.com) · Get Neon DB free at [neon.tech](https://neon.tech)
 
 ---
 
 ## Deploy to Vercel
 
-### Option A — Vercel CLI (Recommended)
-
 ```bash
-# Install Vercel CLI
-npm i -g vercel
-
-# Deploy (follow prompts: link project, confirm settings)
-vercel
-
-# For production deployment:
-vercel --prod
+# One-command deploy
+npx vercel --prod
 ```
 
-### Option B — GitHub + Vercel Dashboard
+Or connect your GitHub repo in the [Vercel dashboard](https://vercel.com/new) — it auto-detects Next.js.
 
-1. Push your code to a GitHub repository:
-   ```bash
-   git init
-   git add .
-   git commit -m "Initial StockMind Terminal"
-   git remote add origin https://github.com/YOUR_USERNAME/stockmind-terminal.git
-   git push -u origin main
-   ```
+**Required Vercel environment variables** (add in Project → Settings → Environment Variables):
 
-2. Go to [vercel.com](https://vercel.com) → **New Project** → Import from GitHub
-
-3. Select your `stockmind-terminal` repo
-
-4. Vercel auto-detects Next.js — click **Deploy**
-
-5. Wait ~2 minutes. Your app is live at `https://stockmind-terminal.vercel.app`
-
-### Vercel Settings (if prompted)
-
-| Setting | Value |
-|---|---|
-| Framework Preset | Next.js |
-| Build Command | `npm run build` |
-| Output Directory | `.next` |
-| Install Command | `npm install` |
-| Node.js Version | 18.x |
-
----
-
-## Custom Domain
-
-1. In Vercel dashboard → your project → **Settings → Domains**
-2. Click **Add** → enter your domain (e.g. `stockmind.yourdomain.com`)
-3. Vercel shows two DNS records to add:
-   - **A record**: `@` → `76.76.21.21`
-   - **CNAME**: `www` → `cname.vercel-dns.com`
-4. Add these at your DNS provider (GoDaddy, Namecheap, Cloudflare, etc.)
-5. SSL certificate is auto-provisioned (takes ~5 minutes to propagate)
-
----
-
-## Environment Variables (Optional Upgrades)
-
-For MVP, no env vars are needed. For production upgrades:
-
-```env
-# Optional: Alpha Vantage (free tier: 25 req/day)
-ALPHA_VANTAGE_API_KEY=your_key_here
-
-# Optional: Finnhub (free tier: 60 req/min)
-FINNHUB_API_KEY=your_key_here
-
-# Optional: Polygon.io (paid, institutional grade)
-POLYGON_API_KEY=your_key_here
-
-# Optional: Vercel KV / Upstash for distributed cache
-KV_REST_API_URL=your_url_here
-KV_REST_API_TOKEN=your_token_here
+```
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+CLERK_SECRET_KEY
+DATABASE_URL
+NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
+NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
+NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/
+NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/
 ```
 
-Add env vars in Vercel: **Project Settings → Environment Variables**
+Then trigger a redeploy — the app goes live in ~90 seconds.
 
 ---
 
-## Cost
+## Tech Stack
 
-| Tier | Cost | Limits |
-|---|---|---|
-| Vercel Hobby | **Free** | 100GB bandwidth, 100 deployments/day |
-| Vercel Pro | $20/mo | 1TB bandwidth, team features |
-| Yahoo Finance (yahoo-finance2) | **Free** | Unofficial API, rate limits apply |
-
-The app runs entirely on the Vercel Hobby tier at **zero cost**.
+```
+Frontend          Next.js 15 (App Router + RSC) · React 18 · TailwindCSS 3
+Charts            TradingView Lightweight Charts · Recharts
+Data Fetching     SWR (stale-while-revalidate)
+Auth              Clerk v7 (hosted sign-in/up, edge middleware)
+Database          Neon PostgreSQL (serverless) · Prisma ORM v7
+Market Data       yahoo-finance2 (free) · Angel One SmartAPI · MFAPI.in
+Email             Nodemailer + Gmail SMTP
+Deployment        Vercel (serverless functions + edge)
+Language          TypeScript 5 (strict mode end-to-end)
+```
 
 ---
 
-## Architecture
+## Project Structure
 
 ```
 app/
-  page.tsx              ← Home screener (client component with SWR)
-  stock/[ticker]/       ← Deep-dive page (client, uses SWR)
-  api/
-    quote/[ticker]/     ← Live quote from Yahoo Finance
-    fundamentals/[ticker]/ ← Summary modules
-    history/[ticker]/   ← OHLCV historical data
-    screener/           ← Bulk screener with preset filters
-    analyze/[ticker]/   ← Runs all 6 agents via Promise.all
+├── page.tsx                  ← Home screener
+├── stock/[ticker]/           ← Stock deep-dive page
+├── portfolio/                ← Portfolio & MF tracking
+├── watchlist/                ← Watchlist management
+├── alerts/                   ← Price & signal alerts
+├── rebalance/                ← Rebalancing engine
+└── api/                      ← 23 REST endpoints
 
 lib/
-  yahoo.ts              ← Yahoo Finance wrapper (60s in-memory cache)
-  indicators.ts         ← RSI, MACD, DMA, ATR, Bollinger calculations
-  universe.ts           ← Nifty 50 + Nifty Next 50 (~95 stocks)
-  agents/
-    fundamental.ts      ← P/E, ROE, debt, margins scoring
-    technical.ts        ← RSI, MACD, MA crossover, entry/stop/target
-    sentiment.ts        ← Analyst consensus, institutional ownership
-    moat.ts             ← ROE, margins, sector moat classification
-    growth.ts           ← 3-4Y DCF-lite bear/base/bull scenarios
-    risk.ts             ← Beta, leverage, stress scenarios, position sizing
+├── yahoo.ts                  ← Yahoo Finance wrapper + 60s cache
+├── angelone.ts               ← Angel One SmartAPI client
+├── zerodha.ts                ← Zerodha Kite client
+├── mfapi.ts                  ← Mutual fund NAV + returns
+├── universe.ts               ← NSE stock universe (500+)
+└── agents/
+    ├── fundamental.ts        ← PE, ROE, debt, margins
+    ├── technical.ts          ← Momentum, entry zone, stop-loss
+    ├── sentiment.ts          ← News tone, market bias
+    ├── moat.ts               ← Brand, pricing power, switching cost
+    ├── growth.ts             ← Revenue CAGR, bear/base/bull CAGR
+    └── risk.ts               ← Volatility, drawdown, leverage
+
+prisma/
+└── schema.prisma             ← 7 models: Holdings, MF, Alerts, Watchlist, Cache...
 ```
 
 ---
 
-## Adding More Stocks
+## Database Schema (7 models)
 
-Edit `lib/universe.ts` and add entries to `NIFTY_NEXT_50` or a new array:
-
-```typescript
-{ ticker: 'KPIGREEN', name: 'KPI Green Energy', sector: 'Renewable Energy' },
-```
-
-Yahoo Finance uses `.NS` suffix automatically — just use the NSE ticker symbol.
+| Model | Purpose |
+|---|---|
+| `StockHolding` | User's stock positions (qty, avg cost, buy date, broker) |
+| `MFHolding` | Mutual fund holdings (units, invested NAV, amount) |
+| `MFNavCache` | Global NAV history cache (avoids repeated API calls) |
+| `Alert` | Price & signal alerts per user |
+| `Watchlist` | User's tracked symbols |
+| `RebalanceHistory` | Saved rebalancing recommendations |
+| `FundamentalsCache` | PE, PB, ROE, EPS cached globally |
+| `Settings` | Key-value store for broker tokens and config |
 
 ---
 
-## Legal Warning
+## Running Costs
 
-> **SEBI RA Registration Required for Monetization**
+| Service | Tier | Cost |
+|---|---|---|
+| Vercel | Hobby | **Free** (100 GB BW, 100 deploys/day) |
+| Neon PostgreSQL | Free | **Free** (0.5 GB storage, serverless) |
+| Clerk | Free | **Free** (10,000 MAU) |
+| yahoo-finance2 | — | **Free** (unofficial, no key needed) |
+| MFAPI.in | — | **Free** |
+
+**Total running cost at zero scale: ₹0/month.**
+
+---
+
+## Legal Notice
+
+> This app is built for **personal research and educational use only**.
 >
-> Under SEBI (Investment Advisers) Regulations, 2013, providing investment advice for a fee in India requires registration as a SEBI-Registered Investment Advisor (RA). Operating a paid stock analysis service without RA registration is a legal violation.
->
-> This app is for **educational and personal research use only**. If you intend to monetize (subscriptions, ads tied to investment content, advisory fees), you must:
-> 1. Register as a SEBI RA (sebi.gov.in)
-> 2. Add required SEBI disclosures
-> 3. Comply with SEBI IA regulations on research reports
->
-> Free, non-commercial, educational use does not require registration.
+> Under SEBI (Investment Advisers) Regulations 2013, providing investment advice for a fee requires SEBI RA registration. AI-generated scores are not financial advice — always do your own due diligence before investing.
 
 ---
 
 ## License
 
-MIT — use freely for personal and educational purposes. See `LICENSE` file.
+MIT — free to use for personal and educational purposes.
 
 ---
 
-*Data source: Yahoo Finance (unofficial API). Not affiliated with Yahoo, NSE, or SEBI. Educational research tool only.*
+<div align="center">
+
+Built with Next.js 15 · Clerk · Neon · Prisma · Deployed on Vercel
+
+*Data: Yahoo Finance (unofficial) · Not affiliated with NSE, BSE, SEBI, or any broker.*
+
+</div>
