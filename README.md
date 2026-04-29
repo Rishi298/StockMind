@@ -4,7 +4,9 @@
 <img src="https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript&logoColor=white" />
 <img src="https://img.shields.io/badge/Clerk-Auth-6C47FF?style=for-the-badge&logo=clerk&logoColor=white" />
 <img src="https://img.shields.io/badge/Neon-PostgreSQL-00E699?style=for-the-badge&logo=postgresql&logoColor=black" />
-<img src="https://img.shields.io/badge/Vercel-Deployed-000000?style=for-the-badge&logo=vercel" />
+<a href="https://stock-mind-p93x.vercel.app/">
+  <img src="https://img.shields.io/badge/Vercel-Live%20Demo-000000?style=for-the-badge&logo=vercel" />
+</a>
 
 <br /><br />
 
@@ -15,9 +17,21 @@
 
 <br />
 
+**[→ Try it live: stock-mind-p93x.vercel.app](https://stock-mind-p93x.vercel.app/)**
+
+<br />
+
 > *A Bloomberg Terminal for Bharat — without the $24,000/year price tag.*
 
 </div>
+
+---
+
+## Live Demo
+
+> **[https://stock-mind-p93x.vercel.app/](https://stock-mind-p93x.vercel.app/)**
+>
+> Sign up with any email → browse the screener → search any NSE stock (try `RELIANCE`, `TCS`, `INFY`) → click **Deep Scan** to run the AI.
 
 ---
 
